@@ -1,29 +1,36 @@
 import { userService } from './user.service'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-
+import { generateAccessToken } from '../utils/auth.util'
+import { HttpError } from "../utils/httpError.util";
+import logger from "../utils/logger.util";
 const loginWithEmailAndPassword = async (email: string, password: string) => {
-    const users = await userService.getAllUsers()
-    const user = users.find(item => item.email === email)
-
-
+    const user = await userService.getUserByEmail(email)
     if (!user) {
+        logger.error(email)
         throw new Error('Credentials are incorrect')
     }
+
     const isValidPassword = await bcrypt.compare(password, user.password)
 
     if (!isValidPassword) {
-        throw new Error('Credentials are incorrect')
+        throw new HttpError('Credentials are incorrect', 500)
     }
-    const token = jwt.sign({ email: user.email }, 'secret', { expiresIn: '1h' })
+    const token = generateAccessToken(user.email, user.id)
     return token
+}
+
+const register = async (email: string, password: string) => {
+    const user = await userService.createUserWithEmailAndPassword(email, password)
+
+    const token = generateAccessToken( user.email, user.id )
+    return token
+
 }
 
 
 
 
-
-
 export const authService = {
-    loginWithEmailAndPassword
+    loginWithEmailAndPassword,
+    register
 }
