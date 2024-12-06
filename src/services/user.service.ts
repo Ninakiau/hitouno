@@ -1,43 +1,46 @@
 import bcrypt from 'bcrypt'
 import { UserModel } from '../models/user.model'
-import { nanoid } from 'nanoid'
-
+import {HttpError} from '../utils/httpError.util'
 //Traer todos los usuarios
 const getAllUsers = async () => {
-    const users = await UserModel.readUsers()
+    const users = await UserModel.findAll()
     return users
 }
 
+// Traer usuario por id
+const getUserById = async (id: string) => {
+    const user = await UserModel.findById(id)
+    if (!user) throw new HttpError("User not found", 404);
+    return user
+}
+// Traer usario por email
+const getUserByEmail = async (email: string) => {
+    const user = await UserModel.findByEmail(email)
+
+    if (!user) {
+        throw new HttpError('User not found', 404)
+    }
+    return user
+}
 //Crear 1 usuario con el correo y la contraseña
 const createUserWithEmailAndPassword = async (email: string, password: string) => {
-    // Traemos todos los usuarios
-    const users = await getAllUsers()
-
-    //Trae el usuario por el correo
-    const user = users.find(item => item.email === email)
-
-
+    const user = await UserModel.findByEmail(email)
     if (user) {
-        throw new Error('Email already exists')
+        throw new HttpError('Email already exists', 400)
     }
+
     // Creamos el usuarios y hasheamos la contraseña
     const salt = await bcrypt.genSalt(10)
-    const hashPassword = await bcrypt.hash(password, salt)
-    const newUser = {
-        id: nanoid(),
-        email,
-        password: hashPassword
-    }
+    const hashedPassword = await bcrypt.hash(password, salt)
+    const newUser = await UserModel.create(email, hashedPassword)
 
-    //Agregamos el nuevo usuario
-    users.push(newUser)
-    await UserModel.writeUsers(users)
-    return newUser
+    return newUser;
 }
 
 
 export const userService = {
     getAllUsers,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    getUserByEmail
 }   
 
