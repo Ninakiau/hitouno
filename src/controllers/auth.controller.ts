@@ -1,39 +1,37 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services/user.service';
 import { authService } from '../services/auth.service';
-
-const login = async (req: Request, res: Response) => {
+import {authLoginSchema} from '../schemas/auth.schema';
+import { HttpError } from "../utils/httpError.util";
+const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
+        const { error, value } = authLoginSchema.validate(req.body);
+
+        if (error) {
+            throw new HttpError(error.message, 400);
+        }
+        const  {email, password } = value;
         const token = await authService.loginWithEmailAndPassword(email, password)
         res.json({token});
     }
     catch (error) {
-        console.log(error);
-        if (error instanceof Error) {
-            res.status(500).json({ error: error.message });
-        }
-        else {
-            res.status(500).json({ error: "Error del server" });
-        }
+        next(error);
     }
 }
 
 
-const register = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
+        const {error, value } = authLoginSchema.validate(req.body);
+        if (error) {
+            throw new HttpError(error.message, 400);
+        }
+        const { email, password } = value;
         const newUser = await userService.createUserWithEmailAndPassword(email, password)
         res.json({newUser});
     }
     catch (error) {
-        console.log(error);
-        if (error instanceof Error) {
-            res.status(500).json({ error: error.message });
-        }
-        else {
-            res.status(500).json({ error: "Error del server" });
-        }
+        next(error);
     }
 }  
 export const authController = {
