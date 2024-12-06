@@ -27,15 +27,18 @@ Antes de comenzar, asegúrate de tener lo siguiente instalado en tu sistema:
 1. **Clona el repositorio**  
    Si aún no tienes el repositorio en tu máquina, usa el siguiente comando:  
    ```bash
-   git clone https://github.com/tu-usuario/hito-uno.git
+   git clone https://github.com/Ninakiau/hitouno.git
    ```
 
 2. **Navega al directorio del proyecto**  
    ```bash
    cd hitouno
    ```
-
-3. **Instala las dependencias necesarias**  
+3. **Cambia a la rama hitodos**
+   ```bash
+   git checkout hitodos
+   ```
+4. **Instala las dependencias necesarias**  
    Este comando instalará todas las dependencias listadas en el archivo `package.json`:  
    ```bash
    npm install
@@ -97,7 +100,6 @@ Esto levantará un servidor local (normalmente en `http://localhost:3000/`), don
 - **Backend:** [Node.js, Express]
 - **Autenticación:** [JWT]
 
----
 
 ## Autor
 
