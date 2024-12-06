@@ -4,4 +4,6 @@ export interface Cat{
     weight: number;
     height: number;
     age: number;
+    isFat: boolean;
+    user: string;
 }
