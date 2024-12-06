@@ -1,7 +1,7 @@
-export class httpError extends Error {
-    constructor(message: string, public code: number){
-      super(message)
+export class HttpError extends Error {
+    constructor(message: string, public code: number) {
+        super(message)
 
-      Error.captureStackTrace(this, this.constructor)
+        Error.captureStackTrace(this, this.constructor)
     }
-  }
+}
