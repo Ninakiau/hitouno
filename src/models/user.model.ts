@@ -45,7 +45,7 @@ const remove = async (id: string) => {
         values: [id],
     };
     const { rows } = await pool.query(query);
-    return rows[0] as User;
+    return { message: `User with id ${id} deleted successfully` };
 }
 const findAll = async () => {
     const query = {

@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { verifyAccessToken } from '../utils/auth.util'
 
 declare module "express-serve-static-core" {
     interface Request {
         email?: string;
+        uid?: string;
     }
 }
 //Todos los middlewares reciben req, res y next como mínimo
@@ -16,21 +18,22 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     const token = authHeader.split(' ')[1];
 
     try {
-        const payload = jwt.verify(token, 'secret') as jwt.JwtPayload;
+        const payload = verifyAccessToken(token) 
         req.email = payload.email;
+        req.uid = payload.uid;
         next();
     } catch (error) {
         console.log(error);
 
-        if (error instanceof jwt.TokenExpiredError) {
+        if (error instanceof jwt.JsonWebTokenError) {
             res.status(401).json({ error: 'Token invalid signature' });
             return;
         }
-        if (error instanceof jwt.JsonWebTokenError) {
+        if (error instanceof jwt.TokenExpiredError) {
             res.status(401).json({ error: 'Token expired' });
             return;
         }
-        res.status(500).json({ error: 'Invalid token' });
+        res.status(500).json("Token Error");
         return;
     }
 }

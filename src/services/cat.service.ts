@@ -1,44 +1,57 @@
 import { CatModel } from "../models/cat.model";
 import {Cat} from "../interfaces/cat.interface";
-import { nanoid } from "nanoid";
+
 
 // Traemos todos los gatos 
 const getAllCats = async () => {
     const cats = await CatModel.readCats();
+    if (cats.length === 0) throw new Error('No cats found');
     return cats;
 }
 //Obtenemos 1 gato por id
 const getACat = async (id: string) => {
     const cat = await CatModel.readCatById(id);
+    if (!cat) throw new Error("Cat not found");
     return cat;
 }
 
-const writeCats = async (name: string, weight: number, height: number, age: number) => {
-    //Validamos los campos
-    if (!name || !weight || !height || !age) {
-        throw new Error("Todos los campos del gato son obligatorios: name, weight, height, age.");
+const writeCats = async (name: string, weight: number, height: number, age: number, isFat: boolean, user: string) => {
+
+    // Validación adicional para asegurar que los datos son correctos
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+        throw new Error("El campo 'name' es obligatorio y debe ser una cadena no vacía.");
+    }
+    if (typeof weight !== 'number' || weight <= 0) {
+        throw new Error("El campo 'weight' debe ser un número positivo.");
+    }
+    if (typeof height !== 'number' || height <= 0) {
+        throw new Error("El campo 'height' debe ser un número positivo.");
+    }
+    if (typeof age !== 'number' || age <= 0) {
+        throw new Error("El campo 'age' debe ser un número positivo.");
+    }
+    if (typeof isFat !== 'boolean') {
+        throw new Error("El campo 'isFat' debe ser un valor booleano (true o false).");
+    }
+    if (!user || typeof user !== 'string') {
+        throw new Error("El campo 'user' es obligatorio y debe ser una cadena.");
     }
 
-    // Obtenemos la lista de gatos existente
-    const cats = await getAllCats();
-
-    // Creamos el nuevo gato con un ID único
-    const newCat = {
-        id: nanoid(), // Genera un ID único
-        name,
-        weight,
-        height,
-        age  
-    };
-    //Agregamos el nuevo gato 
-    cats.push(newCat);
-    await CatModel.writeCats(cats); // Guardamos los gatos actualizados
-    return newCat; // Retorna el gato recién agregado
+    // Llamada al modelo para insertar el gato
+    const newCat = await CatModel.createCat(name, weight, height, age, isFat, user);
+    return newCat;
 };
 
 
+const delectCat = async (id: string) => {
+    const cat = await CatModel.readCatById(id);
+    if (!cat) throw new Error("Cat not found");
+    await CatModel.deleteCat(id);
+    return { message: `Cat with id ${id} deleted successfully` }
+}
 export const CatService = {
     getAllCats,
     getACat,
-    writeCats
+    writeCats,
+    delectCat
 }

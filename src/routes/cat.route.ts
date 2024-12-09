@@ -14,4 +14,7 @@ router.get('/:id', catController.getCat);
 // Crear un gato
 router.post('/', verifyToken , catController.writeCat);
 
+//Borrar gato
+router.delete('/:id', verifyToken , catController.deleteCat);
+
 export default router;

@@ -14,5 +14,13 @@ router.get('/users', verifyToken , userController.getUsers);
 // Crear un usuario
 router.post('/users', userController.createUser);
 
+// Leer un usuario por id
+router.get('/users/:id', verifyToken , userController.getUserById);
+
+//Borrar usuario por id
+router.delete('/users/:id', verifyToken , userController.remove);
+
+// Actualizar un usuario por id
+router.put('/users/:id', verifyToken , userController.updateUser);
 
 export default router;

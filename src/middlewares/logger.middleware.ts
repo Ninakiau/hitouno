@@ -6,6 +6,9 @@ export const loggerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.error(`${req.url} ${req.method} `);
+  // Registra información sobre la solicitud
+  logger.info(`${req.method} ${req.url} `);
+  
+  // Continúa con el siguiente middleware
   next();
 };

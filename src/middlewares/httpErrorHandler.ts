@@ -9,7 +9,7 @@ export const httpErrorHandler = (
     next: NextFunction
 ) => {
     console.log(error);
-    logger.error(error.message);
+    logger.error(`${req.url} ${req.method} ${error.message}`);
     if (error instanceof HttpError) {
         res.status(error.code).json({ error: error.message });
     } else res.status(500).json({ error: "Error de servidor" });
