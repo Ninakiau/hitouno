@@ -4,7 +4,6 @@ import { HttpError } from '../utils/httpError.util'
 //Traer todos los usuarios
 const getAllUsers = async () => {
     const users = await UserModel.findAll()
-    if (users.length === 0) throw new HttpError('No users found', 404)
     return users
 }
 

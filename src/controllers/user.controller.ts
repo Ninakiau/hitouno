@@ -5,13 +5,14 @@ import { userService } from "../services/user.service";
 const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userService.getAllUsers();
-    res.json(users);
+    res.status(200).json(users);
   } catch (error) {
     console.log(error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json(error);
     }
-    res.status(500).json(error);
   }
 };
 

@@ -5,7 +5,7 @@ import {Cat} from "../interfaces/cat.interface";
 // Traemos todos los gatos 
 const getAllCats = async () => {
     const cats = await CatModel.readCats();
-    if (cats.length === 0) throw new Error('No cats found');
+
     return cats;
 }
 //Obtenemos 1 gato por id

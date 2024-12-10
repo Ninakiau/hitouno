@@ -5,7 +5,7 @@ import { CatService } from "../services/cat.service";
 const getCats = async (req: Request, res: Response) => {
     try {
         const cats = await CatService.getAllCats();
-        res.json(cats);
+        res.status(200).json(cats);
     } catch (error) {
         console.log(error);
         if (error instanceof Error) {

@@ -6,10 +6,10 @@ const router: Router = Router();
 
 
 //Leer gatos 
-router.get('/', catController.getCats);
+router.get('/', verifyToken,catController.getCats);
 
 //Obtener un gato por id
-router.get('/:id', catController.getCat);
+router.get('/:id', verifyToken,catController.getCat);
 
 // Crear un gato
 router.post('/', verifyToken , catController.writeCat);
