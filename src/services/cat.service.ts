@@ -1,23 +1,30 @@
-import { CatModel } from "../models/cat.model";
-import {Cat} from "../interfaces/cat.interface";
+import { Cat } from "../interfaces/cat.interface";
+import { CatModel } from "../schema/cat.model";
+import { UserModel } from "../schema/user.model";
 
 
 // Traemos todos los gatos 
 const getAllCats = async () => {
-    const cats = await CatModel.readCats();
+    const cats = await CatModel.findAll();
 
     return cats;
 }
 //Obtenemos 1 gato por id
 const getACat = async (id: string) => {
-    const cat = await CatModel.readCatById(id);
+    const cat = await CatModel.findByPk(id);
     if (!cat) throw new Error("Cat not found");
     return cat;
 }
+type CreateCatDTO = {
+    name: string;
+    weight: number;
+    height: number;
+    age: number;
+    isFat: boolean;
+    userId: string;
+};
 
-const writeCats = async (name: string, weight: number, height: number, age: number, isFat: boolean, user: string) => {
-
-    // Validación adicional para asegurar que los datos son correctos
+const writeCats = async (name: string, weight: number, height: number, age: number, isFat: boolean, userId: string) => {
     if (!name || typeof name !== 'string' || name.trim() === '') {
         throw new Error("El campo 'name' es obligatorio y debe ser una cadena no vacía.");
     }
@@ -33,25 +40,30 @@ const writeCats = async (name: string, weight: number, height: number, age: numb
     if (typeof isFat !== 'boolean') {
         throw new Error("El campo 'isFat' debe ser un valor booleano (true o false).");
     }
-    if (!user || typeof user !== 'string') {
+    if (!userId || typeof userId !== 'string') {
         throw new Error("El campo 'user' es obligatorio y debe ser una cadena.");
     }
 
-    // Llamada al modelo para insertar el gato
-    const newCat = await CatModel.createCat(name, weight, height, age, isFat, user);
+    // Validar existencia del usuario
+    const user = await UserModel.findByPk(userId);
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    // Crear el gato
+    const newCat = await CatModel.create({ name, weight, height, age, isFat, userId } );
     return newCat;
 };
-
-
-const delectCat = async (id: string) => {
-    const cat = await CatModel.readCatById(id);
+const deleteCat = async (id: string): Promise<{ message: string }> => {
+    const cat = await CatModel.findByPk(id);
     if (!cat) throw new Error("Cat not found");
-    await CatModel.deleteCat(id);
-    return { message: `Cat with id ${id} deleted successfully` }
-}
+    
+    await cat.destroy();
+    return { message: `Cat with id ${id} deleted successfully` };
+  };
 export const CatService = {
     getAllCats,
     getACat,
     writeCats,
-    delectCat
+    deleteCat
 }

@@ -1,21 +1,21 @@
 import "dotenv/config"
 import app from "./app"
-import { pool } from "./config/database";
+import { sequelize } from "./config/sequelize"
 
 const PORT = process.env.PORT || 3000;
 
 
 const main = async () => {
     try {
-        const { rows } = await pool.query("SELECT NOW()");
-        console.log(rows[0].now, "db conectada!");
-        app.listen(PORT, () => {
-            console.log("Servidor andando en el puerto: " + PORT);
-        });
+      // await sequelize.sync({ force: true });
+      await sequelize.sync();
+      console.log("Connection has been established successfully.");
+      app.listen(PORT, () => {
+        console.log("Server is running on http://localhost:3000/");
+      });
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
-
+  };
 
 main();

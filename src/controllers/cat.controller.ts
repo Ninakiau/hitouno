@@ -41,7 +41,7 @@ const getCat = async (req: Request, res: Response) => {
 }
 
 // Creamos un gato 
-const writeCat = async (req: Request, res: Response) => {
+const writeCat = async (req: Request, res: Response): Promise<void>  => {
 
 
     try {
@@ -57,7 +57,7 @@ const writeCat = async (req: Request, res: Response) => {
 
         // Validación de los campos obligatorios
         if (!name || weight === undefined || height === undefined || age === undefined || isFat === undefined || !userId) {
-            return res.status(400).json({
+                res.status(400).json({
                 error: "Todos los campos del gato son obligatorios: name, weight, height, age, isFat, user.",
                 receivedData: req.body // Incluye los datos recibidos en la respuesta de error
             });
@@ -65,7 +65,7 @@ const writeCat = async (req: Request, res: Response) => {
 
         // Validación de tipos para los valores
         if (typeof weight !== 'number' || typeof height !== 'number' || typeof age !== 'number' || typeof isFat !== 'boolean') {
-            return res.status(400).json({
+                res.status(400).json({
                 error: "Los tipos de datos no son correctos. weight, height, y age deben ser números y isFat debe ser un valor booleano.",
                 receivedTypes: {
                     weight: typeof weight,
@@ -97,7 +97,7 @@ const writeCat = async (req: Request, res: Response) => {
 const deleteCat = async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
-        const cat = await CatService.delectCat(id);
+        const cat = await CatService.deleteCat(id);
         res.json(cat);
     } catch (error) {
         console.log(error);
