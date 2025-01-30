@@ -1,4 +1,3 @@
-import { Cat } from "../interfaces/cat.interface";
 import { CatModel } from "../schema/cat.model";
 import { UserModel } from "../schema/user.model";
 

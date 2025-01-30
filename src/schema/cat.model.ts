@@ -1,4 +1,3 @@
-import { Cat } from "../interfaces/cat.interface";
 import { UserModel } from "../schema/user.model";  
 import {
     AllowNull,

@@ -34,14 +34,14 @@ Antes de comenzar, asegúrate de tener lo siguiente instalado en tu sistema:
    ```bash
    cd hitouno
    ```
-3. **Cambia a la rama hitodos**
+3. **Cambia a la rama hito5**
    ```bash
-   git checkout hitodos
+   git checkout hito5
    ```
 
-5. Cambiarse a la rama hitodos
+5. Cambiarse a la rama hito5
    ```bash
-   git checkout hitodos
+   git checkout hito5
    ```
 
 5. **Instala las dependencias necesarias**  
@@ -59,9 +59,9 @@ Para iniciar el proyecto en modo desarrollo, usa el siguiente comando:
 npm run dev
 ```
 
-Esto levantará un servidor local (normalmente en `http://localhost:3000/`), donde podrás ver los cambios reflejados automáticamente mientras trabajas en el proyecto.
+Esto levantará un servidor local `http://localhost:3000/`
 
-
+Puedes revisar la documentación de Swagger en la URL: `http://localhost:3000/api/v1/api-docs/#/`
 ## Tecnologías utilizadas
 - **Backend:** [Node.js, Express]
 - **Autenticación:** [JWT]
