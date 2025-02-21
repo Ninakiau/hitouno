@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Autenticado</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 0.5rem 1rem; }
+        #messages li:nth-child(odd) { background: #eee; }
+        form { padding: 1rem; position: fixed; bottom: 0; width: 100%; display: flex; }
+        input { flex: 1; padding: 0.5rem; }
+        button { padding: 0.5rem; }
+        #login-status { padding: 1rem; color: #666; }
+    </style>
+</head>
+<body>
+    <div id="login-status">Conectando...</div>
+    <ul id="messages"></ul>
+    <form id="form">
+        <input id="input" autocomplete="off" placeholder="Escribe tu mensaje..." />
+        <button>Enviar</button>
+    </form>
+
+    <script>
+        const statusDiv = document.getElementById('login-status');
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        // Obtener token de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (!token) {
+            statusDiv.textContent = 'Error: No se proporcionó token';
+            form.style.display = 'none';
+            throw new Error('No token provided');
+        }
+
+        // Conectar Socket.IO con el token
+        const socket = io({
+            auth: {
+                token: token
+            }
+        });
+
+        // Manejar eventos de Socket.IO
+        socket.on('connect', () => {
+            statusDiv.textContent = 'Conectado al chat';
+            form.style.display = 'flex';
+        });
+
+        socket.on('connect_error', (error) => {
+            statusDiv.textContent = 'Error de conexión: ' + error.message;
+            form.style.display = 'none';
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (input.value.trim()) {
+                socket.emit('chat message', { message: input.value });
+                input.value = '';
+            }
+        });
+
+        socket.on('chat message', (msg) => {
+            const li = document.createElement('li');
+            li.textContent = `${msg.username}: ${msg.message}`;
+            messages.appendChild(li);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+</body>
+</html>
